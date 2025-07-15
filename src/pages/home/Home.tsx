@@ -10,10 +10,10 @@ import articleL10nRu from "@/assets/article-l10n-ru.jpg";
 import articleRtlIcons from "@/assets/article-rtl-icons.jpg";
 import articleUiBy from "@/assets/article-ui-by.jpg";
 import { Layout } from "@/components";
-import type { Locale } from "@/types";
-import styles from "./styles.module.css";
-
 import { baseLocale } from "@/locale-constants";
+import type { Locale } from "@/types";
+
+import styles from "./styles.module.css";
 
 const ARTICLES = [
     {
