@@ -1,0 +1,8 @@
+{
+    "plugins": [
+      ["formatjs", {
+        "removeDefaultMessage": true,
+        "ast": true
+      }]
+    ]
+  }

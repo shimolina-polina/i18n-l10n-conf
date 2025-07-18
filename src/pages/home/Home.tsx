@@ -1,5 +1,6 @@
+/* eslint-disable formatjs/enforce-default-message */
 import { type FC } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import { FormattedDate, FormattedMessage, FormattedNumber, useIntl } from "react-intl";
 import { Link } from "react-router-dom";
 
 import articleAr from "@/assets/article-ar.jpg";
@@ -10,7 +11,7 @@ import articleL10nRu from "@/assets/article-l10n-ru.jpg";
 import articleRtlIcons from "@/assets/article-rtl-icons.jpg";
 import articleUiBy from "@/assets/article-ui-by.jpg";
 import { Layout } from "@/components";
-import { baseLocale } from "@/locale-constants";
+import { CONFERENCE_DATE } from "@/constants";
 import type { Locale } from "@/types";
 
 import styles from "./styles.module.css";
@@ -74,53 +75,81 @@ const getRegionArticleByLocale = (locale: Locale) => {
 
 export const Home: FC = () => {
     const intl = useIntl();
+    const baseLocale = intl.locale.split("-")[0] as "ru" | "en" | "ar";
 
-    const { titleId, descriptionId, imageUrl, articleLink } = getRegionArticleByLocale(baseLocale);
+    const { titleId, descriptionId, imageUrl, articleLink } =
+        getRegionArticleByLocale(intl.locale as Locale);
     console.log(baseLocale);
+
+    const currency = "RUB";
+    const price = 35000;
+    const currencyDisplay = baseLocale === "ru" ? "symbol" : "code";
 
     return (
         <Layout>
             <main className={styles.content}>
                 <section className={styles.hero}>
                     <h1 className={styles.heroTitle}>
-                        <FormattedMessage id="homePage.hero.title" defaultMessage="Connecting digital worlds in all languages" />
+                        <FormattedMessage id="homePage.hero.title" />
                     </h1>
 
                     <div className={styles.heroDetails}>
                         <span className={styles.heroDetailsItem}>
-                            <FormattedMessage id="homePage.hero.conference" defaultMessage="I&L Conference {year}" values={{ year: 2025 }} />
+                            <FormattedMessage
+                                id="homePage.hero.conference"
+                                values={{ year: 2025 }}
+                            />
                         </span>
                         <span className={styles.heroDetailsItem}>
-                            <FormattedMessage id="homePage.hero.date" defaultMessage="August 15, 2025" />
+                            <FormattedDate
+                                value={new Date(CONFERENCE_DATE)}
+                                year="numeric"
+                                month="long"
+                                day="numeric"
+                            />
                         </span>
                         <span className={styles.heroDetailsItem}>
-                            <FormattedMessage id="homePage.hero.location" defaultMessage="Moscow, Russia" />
+                            <FormattedMessage id="homePage.hero.location" />
                         </span>
                         <span className={styles.heroDetailsItem}>
-                            <FormattedMessage id="homePage.hero.price" defaultMessage="{price} ticket" values={{ price: "35,000.00 ₽" }} />
+                            <FormattedMessage
+                                id="homePage.hero.price"
+                                values={{
+                                    price: (
+                                        <FormattedNumber
+                                            value={price}
+                                            style="currency"
+                                            currency={currency}
+                                            minimumFractionDigits={2}
+                                            maximumFractionDigits={2}
+                                            currencyDisplay={currencyDisplay}
+                                        />
+                                    ),
+                                }}
+                            />
                         </span>
                     </div>
 
                     <a className={styles.heroRegister} href="">
-                        <FormattedMessage id="homePage.hero.register" defaultMessage="Register" />
+                        <FormattedMessage id="homePage.hero.register" />
                     </a>
                 </section>
 
                 <section className={styles.regionArticle}>
                     <h2 className={styles.regionArticleTitle}>
-                        <FormattedMessage id="homePage.regionArticle.title" defaultMessage="Relevant for your region" />
+                        <FormattedMessage id="homePage.regionArticle.title" />
                     </h2>
 
                     <Link className={styles.articleCard} to={articleLink}>
                         <div className={styles.cardContent}>
                             <h3 className={styles.cardTitle}>
-                                <FormattedMessage id={titleId} defaultMessage="Article title" />
+                                <FormattedMessage id={titleId} />
                             </h3>
                             <p className={styles.cardDescription}>
-                                <FormattedMessage id={descriptionId} defaultMessage="Article description" />
+                                <FormattedMessage id={descriptionId} />
                             </p>
                             <span className={styles.cardRead}>
-                                <FormattedMessage id="homePage.article.read" defaultMessage="Read" />
+                                <FormattedMessage id="homePage.article.read" />
                             </span>
                         </div>
                         <img className={styles.cardImage} src={imageUrl} />
@@ -129,13 +158,13 @@ export const Home: FC = () => {
 
                 <section className={styles.articles}>
                     <h2 className={styles.articlesTitle}>
-                        <FormattedMessage id="homePage.articles.title" defaultMessage="Articles" />
+                        <FormattedMessage id="homePage.articles.title" />
                     </h2>
 
                     {ARTICLES.length > 0 && (
                         <p className={styles.articlesDescription}>
                             {intl.formatMessage(
-                                { id: "homePage.articles.description", defaultMessage: "Total {count, plural, one {# article} other {# articles}}" },
+                                { id: "homePage.articles.description" },
                                 { count: ARTICLES.length }
                             )}
                         </p>
@@ -144,7 +173,12 @@ export const Home: FC = () => {
                     <div className={styles.articlesList}>
                         {ARTICLES.map(
                             (
-                                { titleId, descriptionId, imageUrl, articleLink },
+                                {
+                                    titleId,
+                                    descriptionId,
+                                    imageUrl,
+                                    articleLink,
+                                },
                                 index
                             ) => (
                                 <Link
@@ -154,13 +188,15 @@ export const Home: FC = () => {
                                 >
                                     <div className={styles.cardContent}>
                                         <h3 className={styles.cardTitle}>
-                                            <FormattedMessage id={titleId} defaultMessage="Article title" />
+                                            <FormattedMessage id={titleId} />
                                         </h3>
                                         <p className={styles.cardDescription}>
-                                            <FormattedMessage id={descriptionId} defaultMessage="Article description" />
+                                            <FormattedMessage
+                                                id={descriptionId}
+                                            />
                                         </p>
                                         <span className={styles.cardRead}>
-                                            <FormattedMessage id="homePage.article.read" defaultMessage="Read" />
+                                            <FormattedMessage id="homePage.article.read" />
                                         </span>
                                     </div>
                                     <img

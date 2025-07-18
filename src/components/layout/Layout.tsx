@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import { BRAND_NAMES } from "@/constants";
 import { BrandLogoIcon, TelegramIcon, VkontakteIcon } from "@/icons";
+import { baseLocale } from "@/locale-constants";
 
 import { LangSelect } from "../lang-select";
 import styles from "./styles.module.css";
@@ -16,7 +17,7 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => (
                     <BrandLogoIcon />
 
                     <span className={styles.headerBrandText}>
-                        {BRAND_NAMES["ru"]}
+                        {BRAND_NAMES[baseLocale]}
                     </span>
                 </Link>
 
@@ -47,7 +48,7 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => (
                         yearEnd: 2025,
                         brand: (
                             <a className={styles.textLink} href="">
-                                {BRAND_NAMES["ru"]}
+                                {BRAND_NAMES[baseLocale]}
                             </a>
                         ),
                         link: (chunks: React.ReactNode) => (

@@ -10,7 +10,8 @@
         "lint": "eslint .",
         "stylelint": "stylelint \"**/*.css\"",
         "prettier": "prettier . --write",
-        "lint:fix": "eslint . --fix && stylelint \"**/*.css\" --fix"
+        "lint:fix": "eslint . --fix && stylelint \"**/*.css\" --fix",
+        "zip": "7z a -xr!node_modules -xr!.git -xr!project.zip project.zip ."
     },
     "dependencies": {
         "@tanstack/react-query": "^5.81.2",

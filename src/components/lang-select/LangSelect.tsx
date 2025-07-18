@@ -1,7 +1,7 @@
 import { type FC, useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { SUPPORTED_LANGS } from "@/constants";
+import { SUPPORTED_LANGS, SUPPORTED_LOCALES } from "@/constants";
 import { DoneIcon, EarthIcon } from "@/icons";
 import type { Lang } from "@/types";
 
@@ -16,6 +16,12 @@ const LANG_LABEL: Record<Lang, string> = {
 
 export const LangSelect: FC = () => {
     const [showMenu, setShowMenu] = useState(false);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const currentLocale = location.pathname.split("/")[1];
+    const [currentLang, currentRegion] = currentLocale ? currentLocale.split("-") : ["en"];
+    const selectedLang: Lang = SUPPORTED_LANGS.includes(currentLang as Lang) ? (currentLang as Lang) : "en";
 
     const handleMenuClose = useCallback(() => {
         setShowMenu(false);
@@ -27,7 +33,25 @@ export const LangSelect: FC = () => {
 
     const langSelectRef = useClickOutside<HTMLDivElement>(handleMenuClose);
 
-    const selectedLang = "ru" as Lang;
+    const handleLangChange = (lang: Lang) => {
+        let newLocale: string = lang;
+        if (currentRegion) {
+            const candidate = `${lang}-${currentRegion}` as const;
+            if ((SUPPORTED_LOCALES as readonly string[]).includes(candidate)) {
+                newLocale = candidate;
+            }
+        } else if (lang === "ru") {
+            newLocale = "ru-RU";
+        }
+        if (!(SUPPORTED_LOCALES as readonly string[]).includes(newLocale)) {
+            newLocale = lang;
+        }
+        const pathParts = location.pathname.split("/");
+        pathParts[1] = newLocale;
+        const newPath = pathParts.join("/") || "/";
+        navigate(newPath + location.search, { replace: true });
+        setShowMenu(false);
+    };
 
     return (
         <div className={styles.langSelect} ref={langSelectRef}>
@@ -37,7 +61,7 @@ export const LangSelect: FC = () => {
                 data-testid="lang-select-button"
             >
                 <span className={styles.langSelectText}>
-                    {LANG_LABEL[selectedLang]}
+                    {LANG_LABEL[selectedLang as Lang]}
                 </span>
 
                 <EarthIcon />
@@ -50,25 +74,20 @@ export const LangSelect: FC = () => {
                 >
                     {SUPPORTED_LANGS.map((lang) => {
                         const langName = LANG_LABEL[lang];
-
                         return (
-                            <Link to="">
-                                <li
-                                    className={styles.langSelectMenuItem}
-                                    key={lang}
-                                    onClick={handleMenuClose}
+                            <li
+                                className={styles.langSelectMenuItem}
+                                key={lang}
+                                onClick={() => handleLangChange(lang)}
+                            >
+                                <span
+                                    className={styles.langSelectMenuItemText}
                                 >
-                                    <span
-                                        className={
-                                            styles.langSelectMenuItemText
-                                        }
-                                    >
-                                        {langName}
-                                    </span>
+                                    {langName}
+                                </span>
 
-                                    {lang === selectedLang && <DoneIcon />}
-                                </li>
-                            </Link>
+                                {lang === selectedLang && <DoneIcon />}
+                            </li>
                         );
                     })}
                 </ul>

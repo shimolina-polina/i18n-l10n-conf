@@ -10,7 +10,15 @@ export default defineConfig({
         alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],
     },
     plugins: [
-        react(),
+        react(
+            {
+            babel: {
+                plugins: [
+                  ['formatjs', { removeDefaultMessage: true, ast: true }]
+                ]
+              }
+        }
+    ),
         svgr({
             include: "**/*.svg",
         }),

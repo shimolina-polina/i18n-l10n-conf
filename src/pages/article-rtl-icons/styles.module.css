@@ -17,3 +17,10 @@
     align-items: center;
     justify-content: center;
 }
+.iconWrap {
+    display: inline-block;
+    max-height: 200px;
+}
+.rtlFlip {
+    transform: scaleX(-1);
+}
